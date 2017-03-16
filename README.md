@@ -1,3 +1,4 @@
+
 # qrcode-terminal-go
 QRCode terminal for golang.
 
@@ -26,3 +27,13 @@ func Test2(){
 ```
 
 ## Screenshot
+### Windows XP
+![winxp](https://github.com/Baozisoftware/qrcode-terminal-go/blob/master/screenshots/winxp.png)
+### Windows 7
+![win7](https://github.com/Baozisoftware/qrcode-terminal-go/blob/master/screenshots/win7.png)
+### windows 10
+![win10](https://github.com/Baozisoftware/qrcode-terminal-go/blob/master/screenshots/win10.png)
+### Ubuntu
+![ubuntu](https://github.com/Baozisoftware/qrcode-terminal-go/blob/master/screenshots/ubuntu.png)
+### macOS
+![macos](https://github.com/Baozisoftware/qrcode-terminal-go/blob/master/screenshots/macos.png)
