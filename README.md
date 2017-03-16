@@ -16,7 +16,7 @@ func main() {
 func Test1(){
 	content := "Hello, 世界"
 	obj := qrcodeTerminal.New()
-	obj.Get([]byte(content)).Print()
+	obj.Get(content).Print()
 }
 
 func Test2(){
