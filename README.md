@@ -26,7 +26,7 @@ func Test2(){
 }
 ```
 
-## Screenshot
+## Screenshots
 ### Windows XP
 ![winxp](https://github.com/Baozisoftware/qrcode-terminal-go/blob/master/screenshots/winxp.png)
 ### Windows 7
