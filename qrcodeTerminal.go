@@ -89,7 +89,7 @@ func (v *qrcodeTerminal) Get(content interface{}) (result *QRCodeString) {
 }
 
 func (v *qrcodeTerminal) Get2(bytes []byte) (result *QRCodeString) {
-	data, err := ParseQR(bytes)
+	data, err := parseQR(bytes)
 	if err == nil {
 		result = v.getQRCodeString(data)
 	}
@@ -133,7 +133,7 @@ func (v *qrcodeTerminal) getQRCodeString(data [][]bool) (result *QRCodeString) {
 	return
 }
 
-func ParseQR(bytes []byte) (data [][]bool, err error) {
+func parseQR(bytes []byte) (data [][]bool, err error) {
 	r := nbytes.NewReader(bytes)
 	img, err := png.Decode(r)
 	if err == nil {
