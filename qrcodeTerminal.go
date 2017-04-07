@@ -5,6 +5,8 @@ import (
 
 	"github.com/skip2/go-qrcode"
 	"github.com/mattn/go-colorable"
+	"image/png"
+	nbytes "bytes"
 )
 
 type consoleColor string
@@ -79,30 +81,17 @@ func (v *qrcodeTerminal) Get(content interface{}) (result *QRCodeString) {
 	} else if t, ok := content.([]byte); ok {
 		qr, err = qrcode.New(string(t), qrcode.RecoveryLevel(v.level))
 	}
-	str := ""
 	if qr != nil && err == nil {
-		for ir, row := range qr.Bitmap() {
-			lr := len(row)
-			if ir == 0 || ir == 1 || ir == 2 ||
-				ir == lr-1 || ir == lr-2 || ir == lr-3 {
-				continue
-			}
-			for ic, col := range row {
-				lc := len(qr.Bitmap())
-				if ic == 0 || ic == 1 || ic == 2 ||
-					ic == lc-1 || ic == lc-2 || ic == lc-3 {
-					continue
-				}
-				if col {
-					str += fmt.Sprint(v.front)
-				} else {
-					str += fmt.Sprint(v.back)
-				}
-			}
-			str += fmt.Sprintln()
-		}
-		obj := QRCodeString(str)
-		result = &obj
+		data := qr.Bitmap()
+		result = v.getQRCodeString(data)
+	}
+	return
+}
+
+func (v *qrcodeTerminal) Get2(bytes []byte) (result *QRCodeString) {
+	data, err := ParseQR(bytes)
+	if err == nil {
+		result = v.getQRCodeString(data)
 	}
 	return
 }
@@ -115,6 +104,52 @@ func New2(front, back consoleColor, level qrcodeRecoveryLevel) *qrcodeTerminal {
 func New() *qrcodeTerminal {
 	front, back, level := ConsoleColors.BrightBlack, ConsoleColors.BrightWhite, QRCodeRecoveryLevels.Medium
 	return New2(front, back, level)
+}
+
+func (v *qrcodeTerminal) getQRCodeString(data [][]bool) (result *QRCodeString) {
+	str := ""
+	for ir, row := range data {
+		lr := len(row)
+		if ir == 0 || ir == 1 || ir == 2 ||
+			ir == lr-1 || ir == lr-2 || ir == lr-3 {
+			continue
+		}
+		for ic, col := range row {
+			lc := len(data)
+			if ic == 0 || ic == 1 || ic == 2 ||
+				ic == lc-1 || ic == lc-2 || ic == lc-3 {
+				continue
+			}
+			if col {
+				str += fmt.Sprint(v.front)
+			} else {
+				str += fmt.Sprint(v.back)
+			}
+		}
+		str += fmt.Sprintln()
+	}
+	obj := QRCodeString(str)
+	result = &obj
+	return
+}
+
+func ParseQR(bytes []byte) (data [][]bool, err error) {
+	r := nbytes.NewReader(bytes)
+	img, err := png.Decode(r)
+	if err == nil {
+		rect := img.Bounds()
+		mx, my := rect.Max.X, rect.Max.Y
+		data = make([][]bool, mx)
+		for x := 0; x < mx; x++ {
+			data[x] = make([]bool, my)
+			for y := 0; y < my; y++ {
+				c := img.At(x, y)
+				r, _, _, _ := c.RGBA()
+				data[x][y] = r == 0
+			}
+		}
+	}
+	return
 }
 
 var outer = colorable.NewColorableStdout()
